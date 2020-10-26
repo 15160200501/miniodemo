@@ -1,0 +1,110 @@
+version: '3'
+services:
+  mingweb:
+    build: .
+    restart: always
+    image: mingweb1.0
+    ports:
+      - "8080:8080"
+    depends_on:
+#      - mysql
+#      - redis
+#      - rabbitmq
+#      - elasticsearch
+      - minio
+#
+#  mysql:
+#    image: mysql:8.0
+#    container_name: mysql
+#    command:
+#      --default-authentication-plugin=mysql_native_password
+#      --character-set-server=utf8mb4
+#      --collation-server=utf8mb4_general_ci
+#      --explicit_defaults_for_timestamp=true
+#      --lower_case_table_names=1
+#    # data 用来存放了数据库表文件，init存放初始化的脚本
+#    volumes:
+#      - /data/docker_file/mysql/data/:/var/lib/mysql/
+#      - /data/docker_file/mysql/conf/my.cnf:/etc/my.cnf
+#      - /data/docker_file/mysql/init:/docker-entrypoint-initdb.d/
+#    restart: always
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      TZ: Asia/Shanghai
+#      MYSQL_ROOT_PASSWORD: root123
+#
+#  redis:
+#    image: redis
+#    container_name: redis
+#    # 优先使用命令行参数，期次是redis.conf中的参数
+#    command: redis-server /usr/local/etc/redis/redis.conf  --requirepass "root123"
+#    restart: always
+#    volumes:
+#      - /data/docker_file/redis/data:/data
+#      - /data/docker_file/redis/data/redis.conf:/usr/local/etc/redis/redis.conf
+#    ports:
+#      - "6379:6379"
+#
+#  rabbitmq:
+#    hostname: rabbitmq-standalone
+#    image: rabbitmq:3.8.7-management
+#    container_name: rabbitmq
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=root
+#      - RABBITMQ_DEFAULT_PASS=root123
+#    restart: always
+#    volumes:
+#      - /data/docker_file/rabbitmq/data:/var/lib/rabbitmq
+#    ports:
+#      - "15672:15672"
+#      - "5672:5672"
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-size: "200k"
+#        max-file: "10"
+#
+#  elasticsearch:
+#    image: elasticsearch:7.0.0
+#    container_name: elasticsearch
+#    restart: always
+#    environment:
+#      - discovery.type=single-node
+#      - cluster.name=elastic-pro
+#      - http.cors.enabled=true
+#      - http.cors.allow-origin=*
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - /data/docker_file/elasticsearch/data:/usr/share/elasticsearch/data
+#      - /data/docker_file/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    volumes:
+      - /data/docker_file/minio/data:/data
+      - /data/docker_file/minio/minio:/minio
+      - /data/docker_file/minio/config:/root/.minio
+    environment:                                      # 设置环境变量,相当于docker run命令中的-e
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+      MINIO_PROMETHEUS_AUTH_TYPE: "public"
+      MINIO_ACCESS_KEY: "root"                        # 登录账号
+      MINIO_SECRET_KEY: "root123456"                    # 登录密码
+    command: server /data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    ports:                              # 映射端口
+      - "9000:9000"
+      - "42330:42330"

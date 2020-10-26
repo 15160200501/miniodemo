@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+
+minio:
+  endpoint: http://阿里云公网ip地址:9000/
+  accessKey: root
+  secretKey: root123456
+  bucketName: ceshi-1
+
+
